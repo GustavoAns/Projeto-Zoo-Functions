@@ -1,3 +1,4 @@
+const { employees } = require('./data');
 const data = require('./data');
 
 function getSpeciesByIds(ids = '', ids2 = '') {
@@ -60,8 +61,7 @@ function getEmployeeByName(employeeName = '') {
           responsibleFor: funcPrimeiroNome.responsibleFor,
         }
         acumulador.push(addFunc);
-      }
-      else{
+      } else {
         const funcUltimoNome = data.employees.find(employees => employees.lastName === employeeName);
         const addFunc2 = {
           id: funcUltimoNome.id,
@@ -78,11 +78,24 @@ function getEmployeeByName(employeeName = '') {
 }
 
 function createEmployee(personalInfo, associatedWith) {
-  // seu código aqui
+  const addFunc = {
+    id: personalInfo.id,
+    firstName: personalInfo.firstName,
+    lastName: personalInfo.lastName,
+    managers: associatedWith.managers,
+    responsibleFor: associatedWith.responsibleFor,
+  }
+  return addFunc;
 }
 
 function isManager(id) {
-  // seu código aqui
+  const specieId = data.species.find(species => ids === species.id);
+  if (specieId.managers === []) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 function addEmployee(id, firstName, lastName, managers, responsibleFor) {
