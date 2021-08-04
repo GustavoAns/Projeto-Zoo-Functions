@@ -1,11 +1,49 @@
 const data = require('./data');
 
-function getSpeciesByIds(ids) {
-  // seu código aqui
+function getSpeciesByIds(ids = '',ids2 = '') {
+  return data.species.reduce((acumulador, species) => {
+    // if (!Object.keys(acumulador).includes([])) {
+    //   acumulador = [];
+    // }
+      if (ids === '') {
+        return acumulador = [];
+      } else {
+        acumulador = [];
+        const specieId = data.species.find(species => ids === species.id);
+        const addSpecie = {
+          id: specieId.id,
+          name: specieId.name,
+          popularity: specieId.popularity,
+          location: specieId.location,
+          residents: specieId.residents,
+        }
+        acumulador.push(addSpecie)
+        if (ids2 !== '') {
+          const specieId2 = data.species.find(species => ids2 === species.id);
+          const addSpecie2 = {
+            id: specieId2.id,
+            name: specieId2.name,
+            popularity: specieId2.popularity,
+            location: specieId2.location,
+            residents: specieId2.residents,
+          }
+          acumulador.push(addSpecie2)
+        }
+      }
+    return acumulador
+  });
 }
 
 function getAnimalsOlderThan(animal, age) {
-  // seu código aqui
+  return data.species.reduce((acumulador, nomeIdade) => {
+    const specieName = data.species.find(species => animal === species.name);
+    specieName.residents.reduce((acumulador2 = true, idade) => {
+      if (specieName.residents.age < age) {
+        acumulador2 = false;
+      }
+      return acumulador2
+    });
+  });
 }
 
 function getEmployeeByName(employeeName) {
