@@ -15,7 +15,7 @@ function getSpeciesByIds(...ids) {
   //as informaçoes filtradas encontradas pelo species.find usando como filtro
   //os ids recebidos anteriormente . Conteudo asimilado com o Code Review 
   //do dia 04/08/2021
-  return ids.map((id) => species.find((atual) => atual.id ===  id));
+  return ids.map((id) => species.find((atual) => atual.id === id));
 }
 
 function getAnimalsOlderThan(animal, age) {
@@ -73,8 +73,28 @@ function addEmployee(id, firstName, lastName, managers = [], responsibleFor = []
   return employees.push(addFunc);
 }
 
-function countAnimals(species) {
-  // seu código aqui
+function countAnimals(speciesDado = '') {
+  //Nesse ex é nessesario retornar o numero de animais de uma unica specie
+  //caso o parametro seja unico , mas caso seja vazio , deve retorar 
+  //um objeto contendo todas as species tratadas como nomeador e a quantidade 
+  //do animais dessas species presentes no banco de dados Ex 'lions: 5'
+
+  //A condicional (speciesDado !== '') esta 'Dizendo' que ira rodar apenas se o 
+  //speciesDado não for especificado pois ira retornar uma string vazia , valor esse
+  //atribuido como padrão.
+  if (speciesDado !== '') {
+    //esse return ira retornar apenas o numero de objetos dentro de species.residents
+    //da specie dada como filtro.
+    return species.find((atual) => atual.name === speciesDado).residents.length;
+  } else {
+    //esse return se inicia como um objeto vazio e ira passar por cada objeto dentro 
+    //de species e ira acresentar ao acumulador antigo o nome e a quantidade de objetos
+    //dentro de residents da specie em que o reduce esta passando no momento.
+    return species.reduce((acumulador, valorArray) => ({
+      ...acumulador,
+      [valorArray.name]: valorArray.residents.length
+    }), {});
+  }
 }
 
 function calculateEntry(entrants) {
