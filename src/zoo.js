@@ -1,42 +1,26 @@
-const {
-  employees
-} = require('./data');
 const data = require('./data');
 
-function getSpeciesByIds(ids = '', ids2 = '') {
-  return data.species.reduce((acumulador, species) => {
-    if (ids === '') {
-      return acumulador = [];
-    } else {
-      acumulador = [];
-      const specieId = data.species.find(species => ids === species.id);
-      const addSpecie = {
-        id: specieId.id,
-        name: specieId.name,
-        popularity: specieId.popularity,
-        location: specieId.location,
-        residents: specieId.residents,
-      }
-      acumulador.push(addSpecie)
-      if (ids2 !== '') {
-        const specieId2 = data.species.find(species => ids2 === species.id);
-        const addSpecie2 = {
-          id: specieId2.id,
-          name: specieId2.name,
-          popularity: specieId2.popularity,
-          location: specieId2.location,
-          residents: specieId2.residents,
-        }
-        acumulador.push(addSpecie2)
-      }
-    }
-    return acumulador
-  });
+const {
+  species,
+  employees,
+  hours,
+  prices
+} = data;
+
+function getSpeciesByIds(...ids) {
+  if (!ids) {
+    return [];
+  }
+  //O ids.map esta recebendo os ids e criando um novo array para armazenar 
+  //as informaçoes filtradas encontradas pelo species.find usando como filtro
+  //os ids recebidos anteriormente . Conteudo asimilado com o Code Review 
+  //do dia 04/08/2021
+  return ids.map((id) => species.find((atual) => atual.id ===  id));
 }
 
 function getAnimalsOlderThan(animal, age) {
-  return data.species.reduce((acumulador2, nomeIdade) => {
-    const specieName = data.species.find(species => animal === species.name);
+  return species.reduce((acumulador2, nomeIdade) => {
+    const specieName = species.find(species => animal === species.name);
     if (Object.values(specieName.residents).every((residents) => residents.age >= age)) {
       return true;
     } else {
@@ -45,32 +29,19 @@ function getAnimalsOlderThan(animal, age) {
   });
 }
 
-function getEmployeeByName(employeeName = '') {
-    if (employeeName === '') {
-      return acumulador = {};
-    } else {
-      if (data.employees.some((employees) => employees.firstName.includes(employeeName))) {
-        const funcPrimeiroNome = data.employees.find(employees => employees.firstName === employeeName);
-        const addFunc = {
-          id: funcPrimeiroNome.id,
-          firstName: funcPrimeiroNome.firstName,
-          lastName: funcPrimeiroNome.lastName,
-          managers: funcPrimeiroNome.managers,
-          responsibleFor: funcPrimeiroNome.responsibleFor,
-        }
-        return addFunc;
-      } else {
-        const funcUltimoNome = data.employees.find(employees => employees.lastName === employeeName);
-        const addFunc2 = {
-          id: funcUltimoNome.id,
-          firstName: funcUltimoNome.firstName,
-          lastName: funcUltimoNome.lastName,
-          managers: funcUltimoNome.managers,
-          responsibleFor: funcUltimoNome.responsibleFor,
-        }
-        return addFunc2;
-      }
-    }
+function getEmployeeByName(employeeName) {
+  if (!employeeName) {
+    return {};
+  }
+  const funcionariNome = (employees.find((atual) => atual.firstName === employeeName || atual.lastName === employeeName));
+  let funcionarioRetorno = {
+    id: funcionariNome.id,
+    firstName: funcionariNome.firstName,
+    lastName: funcionariNome.lastName,
+    managers: funcionariNome.managers,
+    responsibleFor: funcionariNome.responsibleFor,
+  }
+  return funcionarioRetorno;
 }
 
 function createEmployee(personalInfo, associatedWith) {
@@ -85,10 +56,21 @@ function createEmployee(personalInfo, associatedWith) {
 }
 
 function isManager(id) {
-  return data.employees.some((employees) => employees.managers.includes(id));
+  return employees.some((employees) => employees.managers.includes(id));
 }
-function addEmployee(id, firstName, lastName, managers, responsibleFor) {
-  // seu código aqui
+
+function addEmployee(id, firstName, lastName, managers = [], responsibleFor = []) {
+  if (!id, !firstName, !lastName, !managers, !responsibleFor) {
+    return employees.push([]);
+  }
+  const addFunc = {
+    id,
+    firstName,
+    lastName,
+    managers,
+    responsibleFor,
+  }
+  return employees.push(addFunc);
 }
 
 function countAnimals(species) {
