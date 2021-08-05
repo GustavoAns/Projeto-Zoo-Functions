@@ -1,11 +1,10 @@
-const { employees } = require('./data');
+const {
+  employees
+} = require('./data');
 const data = require('./data');
 
 function getSpeciesByIds(ids = '', ids2 = '') {
   return data.species.reduce((acumulador, species) => {
-    // if (!Object.keys(acumulador).includes([])) {
-    //   acumulador = [];
-    // }
     if (ids === '') {
       return acumulador = [];
     } else {
@@ -47,12 +46,11 @@ function getAnimalsOlderThan(animal, age) {
 }
 
 function getEmployeeByName(employeeName = '') {
-  return data.employees.reduce((acumulador, nomeIdade) => {
     if (employeeName === '') {
-      acumulador = {};
+      return acumulador = {};
     } else {
-      const funcPrimeiroNome = data.employees.find(employees => employees.firstName === employeeName);
-      if (Object.values(funcPrimeiroNome).some((employees) => employees.id === employeeName)) {
+      if (data.employees.some((employees) => employees.firstName.includes(employeeName))) {
+        const funcPrimeiroNome = data.employees.find(employees => employees.firstName === employeeName);
         const addFunc = {
           id: funcPrimeiroNome.id,
           firstName: funcPrimeiroNome.firstName,
@@ -60,7 +58,7 @@ function getEmployeeByName(employeeName = '') {
           managers: funcPrimeiroNome.managers,
           responsibleFor: funcPrimeiroNome.responsibleFor,
         }
-        acumulador.push(addFunc);
+        return addFunc;
       } else {
         const funcUltimoNome = data.employees.find(employees => employees.lastName === employeeName);
         const addFunc2 = {
@@ -70,11 +68,9 @@ function getEmployeeByName(employeeName = '') {
           managers: funcUltimoNome.managers,
           responsibleFor: funcUltimoNome.responsibleFor,
         }
-        acumulador.push(addFunc2);
+        return addFunc2;
       }
     }
-    return acumulador
-  });
 }
 
 function createEmployee(personalInfo, associatedWith) {
@@ -89,15 +85,8 @@ function createEmployee(personalInfo, associatedWith) {
 }
 
 function isManager(id) {
-  const specieId = data.species.find(species => ids === species.id);
-  if (specieId.managers === []) {
-    return true;
-  }
-  else {
-    return false;
-  }
+  return data.employees.some((employees) => employees.managers.includes(id));
 }
-
 function addEmployee(id, firstName, lastName, managers, responsibleFor) {
   // seu código aqui
 }
