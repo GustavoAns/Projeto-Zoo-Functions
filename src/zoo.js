@@ -97,8 +97,11 @@ function countAnimals(speciesDado = '') {
   }
 }
 
-function calculateEntry(entrants) {
-  // seu código aqui
+function calculateEntry({Adult = 0, Child = 0, Senior = 0} = 0) {
+  let adultTotal = Adult * prices.Adult;
+  let childtTotal = Child * prices.Child;
+  let seniorTotal = Senior * prices.Senior;
+  return adultTotal + childtTotal + seniorTotal;
 }
 
 function getAnimalMap(options) {
