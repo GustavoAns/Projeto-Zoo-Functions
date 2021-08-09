@@ -103,9 +103,27 @@ function calculateEntry({Adult = 0, Child = 0, Senior = 0} = 0) {
   let seniorTotal = Senior * prices.Senior;
   return adultTotal + childtTotal + seniorTotal;
 }
-
+//Ex pode add 2 filtros,O de includeNames é true que retorna o nome dos animais
+//e o sexo dos animais que só retorna os animais com o sexo expecificado.
 function getAnimalMap(options) {
-  // seu código aqui
+  const direction = { NE: [], NW: [], SE: [], SW: [] };
+  if (!options || !options.includeNames) {
+    species.forEach((objTrabalhado) => direction[objTrabalhado.location].push(objTrabalhado.name));
+    return direction;
+  }
+ //Aprendi analizando o codico do Marcello Alves que é possivel adicionar HOFs uma atraz da outra para 
+ //diminuir o uso de linhas sem grandes complicações.
+ //Essa linha ira criar um objeto com nome da specie em que o forEach esteja analizando no momento
+ //e ira ser adicionada ha sua região respectiva.
+ species.forEach((objTrabalhado) => direction[objTrabalhado.location].push({ [objTrabalhado.name]: objTrabalhado.residents
+//Essa linha ira tratar de filtrar os animais pelo sexo expecificado por 'options' , caso n seja definido
+//ira ser pulado
+  .filter((animal) => (!options.sex || (animal.sex === options.sex)))
+//Essa linha ira ordenar os animais que foram filtrados
+  .sort(options.sorted ? (a, b) => a.name.localeCompare(b.name) : () => 0)
+//Essa linha ira criar o array que contem os nomes dos animas filtrados 
+  .map((animal) => animal.name) }));
+  return direction;
 }
 
 function getSchedule(dayName) {
