@@ -97,7 +97,11 @@ function countAnimals(speciesDado = '') {
   }
 }
 
-function calculateEntry({Adult = 0, Child = 0, Senior = 0} = 0) {
+function calculateEntry({
+  Adult = 0,
+  Child = 0,
+  Senior = 0
+} = 0) {
   let adultTotal = Adult * prices.Adult;
   let childtTotal = Child * prices.Child;
   let seniorTotal = Senior * prices.Senior;
@@ -106,40 +110,78 @@ function calculateEntry({Adult = 0, Child = 0, Senior = 0} = 0) {
 //Ex pode add 2 filtros,O de includeNames é true que retorna o nome dos animais
 //e o sexo dos animais que só retorna os animais com o sexo expecificado.
 function getAnimalMap(options) {
-  const direction = { NE: [], NW: [], SE: [], SW: [] };
+  const direction = {
+    NE: [],
+    NW: [],
+    SE: [],
+    SW: []
+  };
   if (!options || !options.includeNames) {
     species.forEach((objTrabalhado) => direction[objTrabalhado.location].push(objTrabalhado.name));
     return direction;
   }
- //Aprendi analizando o codico do Marcello Alves que é possivel adicionar HOFs uma atraz da outra para 
- //diminuir o uso de linhas sem grandes complicações.
- //Essa linha ira criar um objeto com nome da specie em que o forEach esteja analizando no momento
- //e ira ser adicionada ha sua região respectiva.
- species.forEach((objTrabalhado) => direction[objTrabalhado.location].push({ [objTrabalhado.name]: objTrabalhado.residents
-//Essa linha ira tratar de filtrar os animais pelo sexo expecificado por 'options' , caso n seja definido
-//ira ser pulado
-  .filter((animal) => (!options.sex || (animal.sex === options.sex)))
-//Essa linha ira ordenar os animais que foram filtrados
-  .sort(options.sorted ? (a, b) => a.name.localeCompare(b.name) : () => 0)
-//Essa linha ira criar o array que contem os nomes dos animas filtrados 
-  .map((animal) => animal.name) }));
+  //Aprendi analizando o codico do Marcello Alves que é possivel adicionar HOFs uma atraz da outra para 
+  //diminuir o uso de linhas sem grandes complicações.
+  //Essa linha ira criar um objeto com nome da specie em que o forEach esteja analizando no momento
+  //e ira ser adicionada ha sua região respectiva.
+  species.forEach((objTrabalhado) => direction[objTrabalhado.location].push({
+    [objTrabalhado.name]: objTrabalhado.residents
+      //Essa linha ira tratar de filtrar os animais pelo sexo expecificado por 'options' , caso n seja definido
+      //ira ser pulado
+      .filter((animal) => (!options.sex || (animal.sex === options.sex)))
+      //Essa linha ira ordenar os animais que foram filtrados
+      .sort(options.sorted ? (a, b) => a.name.localeCompare(b.name) : () => 0)
+      //Essa linha ira criar o array que contem os nomes dos animas filtrados 
+      .map((animal) => animal.name)
+  }));
   return direction;
 }
 
 function getSchedule(dayName) {
-  // seu código aqui
+  const dias = {
+    Tuesday: 'Open from 8am until 6pm',
+    Wednesday: 'Open from 8am until 6pm',
+    Thursday: 'Open from 10am until 8pm',
+    Friday: 'Open from 10am until 8pm',
+    Saturday: 'Open from 8am until 10pm',
+    Sunday: 'Open from 8am until 8pm',
+    Monday: 'CLOSED'
+  }
+  if (!dayName) {
+    return dias;
+  }
+  return {
+    [dayName]: dias[dayName]
+  };
 }
 
 function getOldestFromFirstSpecies(id) {
-  // seu código aqui
+  const funcionarioId = employees.find((funci) => funci.id === id);
+  const todosPrimeiroSpecie = species.find((animal) => animal.id === funcionarioId.responsibleFor[0]).residents;
+  //Lembrete em "valor.age > acumulador.age ? valor : acumulador" se valor for > que o acumulado ira
+  //subistituir o acumulado pelo valor , mas caso seja < ira retornar o acumulado.
+  const { name, sex, age } = todosPrimeiroSpecie.reduce((acumulador, valor) => (valor.age > acumulador.age ? valor : acumulador));
+  return [name, sex, age];
 }
 
 function increasePrices(percentage) {
-  // seu código aqui
+  const precos = Object.keys(prices);
+  const valorAumentado = precos.forEach((preco) => prices[preco] = Math.ceil(prices[preco] * (percentage + 100)) / 100);
+  return valorAumentado;
 }
 
 function getEmployeeCoverage(idOrName) {
-  // seu código aqui
+  //Nessa linha foi criada um função que ira retornar o nome completo do funcionario e um map com os nomes 
+  //de todos os animas que o funcionario trabalha com base nos id's de species presentes no funcionario especificado.
+  const funciPorNomeCompleto = (funcionario) => ({ [`${funcionario.firstName} ${funcionario.lastName}`]: funcionario.responsibleFor.map((id) => species.find((species) => species.id === id).name) });
+  //Caso o parametro seja Undefined ira rodar a Função "funciPorNomeCompleto" e armazenar 1 vez para cada funcionario registrado.
+  if (!idOrName) {
+    return employees.reduce((acumulador, valor) => Object.assign(acumulador, funciPorNomeCompleto(valor)), {});
+  }
+  //Essa linha ira rodar a função "funciPorNomeCompleto" mas para isso acontecer é necessário conferir se o parametro passado foi
+  //um id , nome ou sobrenome. para comparar o id é simples é apenas usar o find em 'employees' mas como buscar pelo nome
+  //ou sobrenome seria + complexo e essa função já esta feita. Por isso posso reutilizar a função do EX 3
+  return funciPorNomeCompleto(employees.find((funcionario) => funcionario.id === idOrName) || getEmployeeByName(idOrName));
 }
 
 module.exports = {
